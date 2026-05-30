@@ -1,0 +1,37 @@
+# ── Python ────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# ── Секреты / окружение ───────────────────
+.env
+*.env.local
+
+# ── Node / сборка фронта ──────────────────
+node_modules/
+frontend/build/
+/coverage
+
+# ── Runtime-артефакты бэкенда ─────────────
+backend/uploads/
+backend/gradcam/
+
+# ── Обучающие данные и артефакты (не нужны для деплоя) ──
+dataset/
+processed/
+diploma_odir/
+для теста/
+
+# ── Документы ─────────────────────────────
+*.docx
+~$*.docx
+
+# ── Редактор / ОС ─────────────────────────
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Рабочие веса модели нужны для инференса — НЕ игнорировать:
+!backend/models/best_efficientnet_b0.pth

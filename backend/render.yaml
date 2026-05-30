@@ -1,0 +1,23 @@
+# Render Blueprint для ML-бэкенда (FastAPI + PyTorch).
+# Создание сервиса: https://dashboard.render.com → New → Blueprint → выбрать репозиторий.
+services:
+  - type: web
+    name: odir-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    healthCheckPath: /
+    envVars:
+      - key: DATABASE_URL
+        sync: false        # строка подключения Supabase
+      - key: SECRET_KEY
+        generateValue: true
+      - key: FRONTEND_URL
+        sync: false        # https://<app>.vercel.app
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      - key: SUPABASE_BUCKET
+        value: scans
