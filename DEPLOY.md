@@ -13,26 +13,43 @@ Render      →  FastAPI + PyTorch (ML-инференс)   ← PyTorch не вл
 
 ---
 
-## Шаг 1. Supabase (база данных + хранилище)
+## Шаг 1. Supabase — ✅ УЖЕ СОЗДАНО
 
-1. Создайте проект на https://supabase.com (бесплатный тариф).
-2. **Database → Connect** → скопируйте строку **Session Pooler** (порт 5432):
-   ```
-   postgresql://postgres.<ref>:<password>@aws-0-<region>.pooler.supabase.com:5432/postgres
-   ```
-   Это будет `DATABASE_URL`.
-3. **Storage → New bucket** → имя `scans`, отметьте **Public**.
-4. **Project Settings → API** → скопируйте:
-   - `Project URL` → `SUPABASE_URL`
-   - `service_role` ключ → `SUPABASE_SERVICE_KEY`
+Проект, таблицы, пользователи и bucket уже подготовлены автоматически:
+
+| Параметр | Значение |
+|---|---|
+| Проект | `odir-diploma`, регион eu-central-1 |
+| ref | `whtnumoeusnhgixkgqfm` |
+| `SUPABASE_URL` | `https://whtnumoeusnhgixkgqfm.supabase.co` |
+| `SUPABASE_BUCKET` | `scans` (public) |
+| Таблицы | `users`, `patients`, `diagnoses`, `model_info` |
+| Пользователи | admin / doctor / analyst (пароли см. ниже) |
+
+Осталось вручную получить **2 секрета** (их API не отдаёт):
+
+1. **`DATABASE_URL`** — задайте пароль БД и соберите строку:
+   - Откройте https://supabase.com/dashboard/project/whtnumoeusnhgixkgqfm/settings/database
+   - **Reset database password** → задайте пароль, скопируйте его.
+   - Строка (Session Pooler, порт 5432):
+     ```
+     postgresql://postgres.whtnumoeusnhgixkgqfm:<password>@aws-0-eu-central-1.pooler.supabase.com:5432/postgres
+     ```
+2. **`SUPABASE_SERVICE_KEY`** — ключ `service_role`:
+   - https://supabase.com/dashboard/project/whtnumoeusnhgixkgqfm/settings/api → раздел **Project API keys** → `service_role` (secret).
 
 ---
 
 ## Шаг 2. ML-бэкенд на Render
 
-Бэкенд должен лежать в git-репозитории на GitHub.
+Проект уже инициализирован как git-репозиторий и закоммичен локально
+(один монорепозиторий: `backend/` + `frontend/`). Осталось запушить на GitHub.
 
-1. Запушьте проект на GitHub.
+1. Создайте пустой репозиторий на https://github.com/new (без README), затем:
+   ```bash
+   git remote add origin https://github.com/<ваш-логин>/odir-diploma.git
+   git push -u origin main
+   ```
 2. На https://dashboard.render.com → **New → Blueprint** → выберите репозиторий
    (Render подхватит `backend/render.yaml`).
 3. Задайте переменные окружения (Environment):
