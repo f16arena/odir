@@ -12,7 +12,7 @@ export default function AdminPanel() {
     { path:'/admin/register', icon:'➕', label:tr.newAccount  },
   ];
   return (
-    <Layout menuItems={MENU} sidebarColor="#b71c1c">
+    <Layout menuItems={MENU}>
       <Routes>
         <Route path="/"         element={<AdminHome />}    />
         <Route path="/users"    element={<Users />}        />
@@ -22,12 +22,13 @@ export default function AdminPanel() {
   );
 }
 
-function StatCard({title,value,icon,gradient}) {
+function StatCard({title,value}) {
+  const { dark } = useTheme();
+  const c = colors(dark);
   return (
-    <div style={{background:gradient,borderRadius:'14px',padding:'20px',color:'#fff',boxShadow:'0 4px 15px rgba(0,0,0,0.15)',textAlign:'center'}}>
-      <div style={{fontSize:'36px',marginBottom:'8px'}}>{icon}</div>
-      <div style={{fontSize:'30px',fontWeight:'700'}}>{value??'—'}</div>
-      <div style={{fontSize:'13px',opacity:0.85,marginTop:'4px'}}>{title}</div>
+    <div style={{background:c.bgCard,border:`1px solid ${c.border}`,borderRadius:'14px',padding:'20px'}}>
+      <div style={{fontSize:'13px',color:c.textMuted,marginBottom:'12px'}}>{title}</div>
+      <div style={{fontSize:'34px',fontWeight:'700',color:c.accent,fontVariantNumeric:'tabular-nums',letterSpacing:'-0.02em',lineHeight:1}}>{value??'—'}</div>
     </div>
   );
 }
@@ -50,12 +51,12 @@ function AdminHome() {
       <div style={{background:c.bgCard,borderRadius:'14px',padding:'20px',boxShadow:c.shadow,border:`1px solid ${c.border}`}}>
         <h3 style={{margin:'0 0 14px',fontSize:'15px',fontWeight:'600',color:c.text}}>{tr.testAccounts}</h3>
         {[
-          {role:'Admin',   email:'admin@odir.local',   pass:'admin123'},
-          {role:'Doctor',  email:'doctor@odir.local',  pass:'doctor123'},
-          {role:'Analyst', email:'analyst@odir.local', pass:'analyst123'},
+          {role:'Admin',   email:'admin@odir.local',   pass:'Admin@123'},
+          {role:'Doctor',  email:'doctor@odir.local',  pass:'Doctor@123'},
+          {role:'Analyst', email:'analyst@odir.local', pass:'Analyst@123'},
         ].map(acc=>(
-          <div key={acc.role} style={{display:'flex',gap:'16px',padding:'10px 12px',borderRadius:'8px',background:dark?'#1e1e35':'#f8f8ff',border:`1px solid ${c.border}`,marginBottom:'6px'}}>
-            <span style={{fontWeight:'600',color:'#3949ab',width:'80px'}}>{acc.role}</span>
+          <div key={acc.role} style={{display:'flex',gap:'16px',padding:'10px 12px',borderRadius:'8px',border:`1px solid ${c.border}`,marginBottom:'6px'}}>
+            <span style={{fontWeight:'600',color:c.accent,width:'80px'}}>{acc.role}</span>
             <span style={{color:c.textMuted,flex:1}}>{acc.email}</span>
             <span style={{color:c.textMuted,fontFamily:'monospace'}}>{acc.pass}</span>
           </div>
@@ -80,7 +81,7 @@ function Users() {
       <div style={{background:c.bgCard,borderRadius:'14px',padding:'20px',boxShadow:c.shadow,border:`1px solid ${c.border}`}}>
         <table style={{width:'100%',borderCollapse:'collapse'}}>
           <thead>
-            <tr style={{background:dark?'#1e1e35':'#f5f5f5'}}>
+            <tr style={{background:c.bgHover}}>
               {['Имя','Email','Роль','Статус','Действия'].map(h=>(
                 <th key={h} style={{padding:'10px 14px',textAlign:'left',fontSize:'12px',fontWeight:'600',color:c.textMuted,borderBottom:`2px solid ${c.border}`}}>{h}</th>
               ))}
@@ -92,20 +93,20 @@ function Users() {
                 <td style={{padding:'12px 14px',fontSize:'13px',color:c.text,fontWeight:'600'}}>{u.full_name}</td>
                 <td style={{padding:'12px 14px',fontSize:'13px',color:c.textMuted}}>{u.email}</td>
                 <td style={{padding:'12px 14px'}}>
-                  <span style={{padding:'3px 10px',borderRadius:'12px',fontSize:'12px',fontWeight:'600',background:roleColors[u.role]+'20',color:roleColors[u.role]}}>
+                  <span style={{padding:'3px 10px',borderRadius:'7px',fontSize:'12px',fontWeight:'600',border:`1px solid ${roleColors[u.role]}`,color:roleColors[u.role]}}>
                     {roleLabels[u.role]}
                   </span>
                 </td>
-                <td style={{padding:'12px 14px',fontSize:'13px',fontWeight:'600',color:u.is_active?'#2e7d32':'#c62828'}}>
+                <td style={{padding:'12px 14px',fontSize:'13px',fontWeight:'600',color:u.is_active?c.success:c.error}}>
                   {u.is_active?`✅ ${tr.active}`:`❌ ${tr.inactive}`}
                 </td>
                 <td style={{padding:'12px 14px'}}>
                   <button onClick={async()=>{await toggleUser(u.id);setUsers(users.map(x=>x.id===u.id?{...x,is_active:!x.is_active}:x));}}
-                    style={{padding:'5px 12px',background:dark?'#2a2a4a':'#f5f5f5',border:`1px solid ${c.border}`,borderRadius:'6px',cursor:'pointer',fontSize:'12px',color:c.text,marginRight:'8px'}}>
+                    style={{padding:'5px 12px',background:c.bgHover,border:`1px solid ${c.border}`,borderRadius:'6px',cursor:'pointer',fontSize:'12px',color:c.text,marginRight:'8px'}}>
                     {u.is_active?tr.disable:tr.enable}
                   </button>
                   <button onClick={async()=>{if(!window.confirm('Удалить?'))return;await deleteUser(u.id);setUsers(users.filter(x=>x.id!==u.id));}}
-                    style={{padding:'5px 12px',background:'transparent',border:'1px solid #c62828',borderRadius:'6px',cursor:'pointer',fontSize:'12px',color:'#c62828'}}>
+                    style={{padding:'5px 12px',background:'transparent',border:`1px solid ${c.error}`,borderRadius:'6px',cursor:'pointer',fontSize:'12px',color:c.error}}>
                     {tr.delete}
                   </button>
                 </td>
@@ -158,10 +159,10 @@ function RegisterUser() {
               <option value="admin">Администратор</option>
             </select>
           </div>
-          {msg   && <div style={{padding:'10px',background:'#e8f5e9',borderRadius:'8px',color:'#2e7d32',fontSize:'13px'}}>{msg}</div>}
-          {error && <div style={{padding:'10px',background:'#ffebee',borderRadius:'8px',color:'#c62828',fontSize:'13px'}}>{error}</div>}
+          {msg   && <div style={{padding:'10px 12px',border:`1px solid ${c.success}`,borderRadius:'8px',color:c.success,fontSize:'13px'}}>{msg}</div>}
+          {error && <div style={{padding:'10px 12px',border:`1px solid ${c.error}`,borderRadius:'8px',color:c.error,fontSize:'13px'}}>{error}</div>}
           <button type="submit" disabled={loading}
-            style={{padding:'11px',background:'linear-gradient(135deg,#b71c1c,#c62828)',color:'#fff',border:'none',borderRadius:'10px',fontSize:'14px',fontWeight:'600',cursor:'pointer',opacity:loading?0.7:1}}>
+            style={{padding:'11px',background:c.accent,color:'#fff',border:'none',borderRadius:'10px',fontSize:'14px',fontWeight:'600',cursor:'pointer',opacity:loading?0.7:1}}>
             {loading?tr.loading:tr.createAccount}
           </button>
         </form>

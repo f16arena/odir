@@ -20,7 +20,7 @@ export default function AnalystPanel() {
     { path:'/analyst/doctors',  icon:'👨‍⚕️', label:'Врачи'        },
   ];
   return (
-    <Layout menuItems={MENU} sidebarColor="#4a148c">
+    <Layout menuItems={MENU}>
       <Routes>
         <Route path="/"         element={<Dashboard />}    />
         <Route path="/model"    element={<ModelMetrics />} />
@@ -31,16 +31,13 @@ export default function AnalystPanel() {
   );
 }
 
-function StatCard({title,value,icon,gradient}) {
+function StatCard({title,value}) {
+  const { dark } = useTheme();
+  const c = colors(dark);
   return (
-    <div style={{background:gradient,borderRadius:'14px',padding:'20px',color:'#fff',boxShadow:'0 4px 15px rgba(0,0,0,0.15)'}}>
-      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
-        <div>
-          <div style={{fontSize:'13px',opacity:0.85,marginBottom:'6px'}}>{title}</div>
-          <div style={{fontSize:'30px',fontWeight:'700'}}>{value??'—'}</div>
-        </div>
-        <div style={{fontSize:'36px',opacity:0.9}}>{icon}</div>
-      </div>
+    <div style={{background:c.bgCard,border:`1px solid ${c.border}`,borderRadius:'14px',padding:'20px'}}>
+      <div style={{fontSize:'13px',color:c.textMuted,marginBottom:'12px'}}>{title}</div>
+      <div style={{fontSize:'34px',fontWeight:'700',color:c.accent,fontVariantNumeric:'tabular-nums',letterSpacing:'-0.02em',lineHeight:1}}>{value??'—'}</div>
     </div>
   );
 }
@@ -154,9 +151,9 @@ function PatientsPage() {
           <h3 style={{margin:'0 0 8px',fontSize:'15px',fontWeight:'600',color:c.text}}>{tr.totalPatients}: {stats.total}</h3>
           <div style={{display:'flex',gap:'16px',marginTop:'12px'}}>
             {stats.gender.map((g,i)=>(
-              <div key={g.name} style={{flex:1,padding:'16px',borderRadius:'10px',background:i===0?'#e8eaf6':'#ffebee',textAlign:'center'}}>
-                <div style={{fontSize:'28px',fontWeight:'700',color:i===0?'#1a237e':'#c62828'}}>{g.value}</div>
-                <div style={{fontSize:'13px',color:i===0?'#3949ab':'#e53935',marginTop:'4px'}}>{genderLabels[g.name]||g.name}</div>
+              <div key={g.name} style={{flex:1,padding:'16px',borderRadius:'10px',border:`1px solid ${c.border}`,textAlign:'center'}}>
+                <div style={{fontSize:'28px',fontWeight:'700',color:c.accent,fontVariantNumeric:'tabular-nums'}}>{g.value}</div>
+                <div style={{fontSize:'13px',color:c.textMuted,marginTop:'4px'}}>{genderLabels[g.name]||g.name}</div>
               </div>
             ))}
           </div>
@@ -196,7 +193,7 @@ function DoctorsPage() {
         <h3 style={{margin:'0 0 16px',fontSize:'15px',fontWeight:'600',color:c.text}}>Список врачей</h3>
         <table style={{width:'100%',borderCollapse:'collapse'}}>
           <thead>
-            <tr style={{background:dark?'#1e1e35':'#f5f5f5'}}>
+            <tr style={{background:c.bgHover}}>
               {['Врач','Email','Пациентов','Диагнозов','Последняя активность'].map(h=>(
                 <th key={h} style={{padding:'10px 14px',textAlign:'left',fontSize:'12px',fontWeight:'600',color:c.textMuted,borderBottom:`2px solid ${c.border}`}}>{h}</th>
               ))}
@@ -208,7 +205,7 @@ function DoctorsPage() {
                 <td style={{padding:'12px 14px',fontSize:'13px',color:c.text,fontWeight:'600'}}>{d.name}</td>
                 <td style={{padding:'12px 14px',fontSize:'13px',color:c.textMuted}}>{d.email}</td>
                 <td style={{padding:'12px 14px',fontSize:'13px',color:c.text,textAlign:'center'}}>{d.patient_count}</td>
-                <td style={{padding:'12px 14px',fontSize:'13px',fontWeight:'600',color:'#1a237e',textAlign:'center'}}>{d.diagnosis_count}</td>
+                <td style={{padding:'12px 14px',fontSize:'13px',fontWeight:'600',color:c.accent,textAlign:'center',fontVariantNumeric:'tabular-nums'}}>{d.diagnosis_count}</td>
                 <td style={{padding:'12px 14px',fontSize:'13px',color:c.textMuted}}>{d.last_active}</td>
               </tr>
             ))}
@@ -257,7 +254,7 @@ function ModelMetrics() {
         <h3 style={{margin:'0 0 16px',fontSize:'15px',fontWeight:'600',color:c.text}}>{tr.detailedMetrics}</h3>
         <table style={{width:'100%',borderCollapse:'collapse'}}>
           <thead>
-            <tr style={{background:dark?'#1e1e35':'#f5f5f5'}}>
+            <tr style={{background:c.bgHover}}>
               {['Класс','AUC-ROC','F1','Precision','Recall'].map(h=>(
                 <th key={h} style={{padding:'10px 14px',textAlign:'left',fontSize:'12px',fontWeight:'600',color:c.textMuted,borderBottom:`2px solid ${c.border}`}}>{h}</th>
               ))}
@@ -267,7 +264,7 @@ function ModelMetrics() {
             {metrics.per_class.map((row,i)=>(
               <tr key={row.class} style={{background:i%2===0?(dark?'#1a1a2e':'#fafafa'):'transparent'}}>
                 <td style={{padding:'10px 14px',fontSize:'13px',color:c.text,fontWeight:'600'}}>{row.name}</td>
-                <td style={{padding:'10px 14px',fontSize:'13px',fontWeight:'600',color:row.auc>0.9?'#2e7d32':row.auc>0.8?'#f57f17':'#c62828'}}>{row.auc}</td>
+                <td style={{padding:'10px 14px',fontSize:'13px',fontWeight:'600',fontVariantNumeric:'tabular-nums',color:row.auc>0.9?c.success:row.auc>0.8?c.warning:c.error}}>{row.auc}</td>
                 <td style={{padding:'10px 14px',fontSize:'13px',color:c.text}}>{row.f1}</td>
                 <td style={{padding:'10px 14px',fontSize:'13px',color:c.text}}>{row.precision}</td>
                 <td style={{padding:'10px 14px',fontSize:'13px',color:c.text}}>{row.recall}</td>

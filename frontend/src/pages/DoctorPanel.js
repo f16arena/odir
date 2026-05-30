@@ -4,8 +4,6 @@ import Layout from '../components/Layout';
 import { useTheme, colors } from '../ThemeContext';
 import { getPatients, createPatient, predict, getRecentDiagnoses, updateComment, fileUrl } from '../api';
 
-const DISPLAY_CLASSES = ["N","D","G","C","A","H","M"];
-
 export default function DoctorPanel() {
   const { tr } = useTheme();
   const MENU = [
@@ -15,7 +13,7 @@ export default function DoctorPanel() {
     { path:'/doctor/history',  icon:'📋', label:tr.history   },
   ];
   return (
-    <Layout menuItems={MENU} sidebarColor="#0d47a1">
+    <Layout menuItems={MENU}>
       <Routes>
         <Route path="/"         element={<DoctorHome />} />
         <Route path="/patients" element={<Patients />}   />
@@ -67,7 +65,7 @@ function Patients() {
     <div>
       <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'20px'}}>
         <h2 style={{margin:0,fontSize:'22px',fontWeight:'700',color:c.text}}>{tr.patients}</h2>
-        <Btn onClick={()=>setShowForm(!showForm)} gradient="linear-gradient(135deg,#0d47a1,#1565c0)">+ {tr.addPatient}</Btn>
+        <Btn onClick={()=>setShowForm(!showForm)} c={c}>+ {tr.addPatient}</Btn>
       </div>
 
       {showForm && (
@@ -91,7 +89,7 @@ function Patients() {
             </div>
           </div>
           <div style={{display:'flex',gap:'10px'}}>
-            <Btn type="submit" gradient="linear-gradient(135deg,#0d47a1,#1565c0)" disabled={loading}>{loading?tr.loading:tr.save}</Btn>
+            <Btn type="submit" c={c} disabled={loading}>{loading?tr.loading:tr.save}</Btn>
             <BtnSec onClick={()=>setShowForm(false)} c={c}>{tr.cancel}</BtnSec>
           </div>
         </form>
@@ -103,7 +101,7 @@ function Patients() {
             style={{display:'flex',alignItems:'center',gap:'14px',background:c.bgCard,padding:'14px 16px',borderRadius:'12px',cursor:'pointer',boxShadow:c.shadow,border:`1px solid ${c.border}`,transition:'transform 0.15s'}}
             onMouseEnter={e=>e.currentTarget.style.transform='translateY(-1px)'}
             onMouseLeave={e=>e.currentTarget.style.transform='translateY(0)'}>
-            <div style={{width:'42px',height:'42px',borderRadius:'50%',background:'linear-gradient(135deg,#0d47a1,#1565c0)',color:'#fff',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:'700',fontSize:'16px',flexShrink:0}}>
+            <div style={{width:'42px',height:'42px',borderRadius:'50%',background:c.accent,color:'#fff',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:'700',fontSize:'16px',flexShrink:0}}>
               {p.full_name[0]}
             </div>
             <div style={{flex:1}}>
@@ -174,7 +172,7 @@ function Diagnose() {
           </label>
 
           <button onClick={handlePredict} disabled={!file||!selId||loading}
-            style={{width:'100%',marginTop:'16px',padding:'12px',background:'linear-gradient(135deg,#0d47a1,#1565c0)',color:'#fff',border:'none',borderRadius:'10px',fontSize:'15px',fontWeight:'600',cursor:'pointer',opacity:(!file||!selId)?0.5:1}}>
+            style={{width:'100%',marginTop:'16px',padding:'12px',background:c.accent,color:'#fff',border:'none',borderRadius:'10px',fontSize:'15px',fontWeight:'600',cursor:'pointer',opacity:(!file||!selId)?0.5:1}}>
             {loading ? tr.analyzing : `🔬 ${tr.runDiagnosis}`}
           </button>
         </div>
@@ -190,11 +188,11 @@ function Diagnose() {
                 <div style={{display:'flex',flexWrap:'wrap',gap:'8px'}}>
                   {result.detected_classes.filter(cls=>cls!=='O').length>0
                     ? result.detected_classes.filter(cls=>cls!=='O').map(cls=>(
-                        <span key={cls} style={{padding:'5px 14px',background:'#ffebee',color:'#c62828',borderRadius:'20px',fontSize:'13px',fontWeight:'600'}}>
+                        <span key={cls} style={{padding:'5px 14px',border:`1px solid ${c.error}`,color:c.error,borderRadius:'8px',fontSize:'13px',fontWeight:'600'}}>
                           {classNames[cls]||cls}
                         </span>
                       ))
-                    : <span style={{padding:'5px 14px',background:'#e8f5e9',color:'#2e7d32',borderRadius:'20px',fontSize:'13px',fontWeight:'600'}}>✓ {classNames['N']}</span>
+                    : <span style={{padding:'5px 14px',border:`1px solid ${c.success}`,color:c.success,borderRadius:'8px',fontSize:'13px',fontWeight:'600'}}>✓ {classNames['N']}</span>
                   }
                 </div>
               </div>
@@ -213,10 +211,10 @@ function Diagnose() {
                 .map(([cls,prob])=>(
                   <div key={cls} style={{display:'flex',alignItems:'center',gap:'8px',marginBottom:'6px'}}>
                     <span style={{fontSize:'12px',color:c.textMuted,width:'130px',flexShrink:0}}>{classNames[cls]||cls}</span>
-                    <div style={{flex:1,height:'8px',background:dark?'#2a2a4a':'#f0f0f0',borderRadius:'4px',overflow:'hidden'}}>
-                      <div style={{height:'100%',width:`${prob*100}%`,background:prob>0.5?'#e53935':'#1a237e',borderRadius:'4px',transition:'width 0.5s'}}/>
+                    <div style={{flex:1,height:'8px',background:c.border,borderRadius:'4px',overflow:'hidden'}}>
+                      <div style={{height:'100%',width:`${prob*100}%`,background:prob>0.5?c.error:c.accent,borderRadius:'4px',transition:'width 0.5s'}}/>
                     </div>
-                    <span style={{fontSize:'12px',color:c.text,width:'42px',textAlign:'right'}}>{(prob*100).toFixed(1)}%</span>
+                    <span style={{fontSize:'12px',color:c.text,width:'42px',textAlign:'right',fontVariantNumeric:'tabular-nums'}}>{(prob*100).toFixed(1)}%</span>
                   </div>
                 ))
               }
@@ -262,8 +260,8 @@ function DiagCard({d,c,expanded}) {
         </div>
         <div style={{display:'flex',gap:'6px',flexWrap:'wrap'}}>
           {detected.length>0
-            ? detected.map(cls=><span key={cls} style={{padding:'3px 10px',background:'#ffebee',color:'#c62828',borderRadius:'12px',fontSize:'12px',fontWeight:'600'}}>{classNames[cls]||cls}</span>)
-            : <span style={{padding:'3px 10px',background:'#e8f5e9',color:'#2e7d32',borderRadius:'12px',fontSize:'12px',fontWeight:'600'}}>✓ {classNames['N']}</span>
+            ? detected.map(cls=><span key={cls} style={{padding:'3px 10px',border:`1px solid ${c.error}`,color:c.error,borderRadius:'7px',fontSize:'12px',fontWeight:'600'}}>{classNames[cls]||cls}</span>)
+            : <span style={{padding:'3px 10px',border:`1px solid ${c.success}`,color:c.success,borderRadius:'7px',fontSize:'12px',fontWeight:'600'}}>✓ {classNames['N']}</span>
           }
         </div>
       </div>
@@ -275,5 +273,5 @@ function DiagCard({d,c,expanded}) {
 }
 
 function Empty({c,text}){return <div style={{textAlign:'center',color:c.textMuted,padding:'40px',background:c.bgCard,borderRadius:'12px',border:`1px solid ${c.border}`}}>{text}</div>;}
-function Btn({children,onClick,gradient,disabled,type}){return <button type={type||'button'} onClick={onClick} disabled={disabled} style={{padding:'10px 20px',background:gradient||'#1a237e',color:'#fff',border:'none',borderRadius:'10px',cursor:'pointer',fontSize:'14px',fontWeight:'600',opacity:disabled?0.6:1}}>{children}</button>;}
+function Btn({children,onClick,disabled,type,c}){return <button type={type||'button'} onClick={onClick} disabled={disabled} style={{padding:'10px 20px',background:c?c.accent:'#1a237e',color:'#fff',border:'none',borderRadius:'10px',cursor:'pointer',fontSize:'14px',fontWeight:'600',opacity:disabled?0.6:1}}>{children}</button>;}
 function BtnSec({children,onClick,c}){return <button onClick={onClick} style={{padding:'8px 16px',background:c.bg,color:c.text,border:`1px solid ${c.border}`,borderRadius:'8px',cursor:'pointer',fontSize:'13px',marginTop:'8px'}}>{children}</button>;}
