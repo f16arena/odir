@@ -41,7 +41,7 @@ function AdminHome() {
   return (
     <div>
       <h2 style={{margin:'0 0 20px',fontSize:'22px',fontWeight:'700',color:c.text}}>{tr.overview}</h2>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'14px',marginBottom:'24px'}}>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))',gap:'14px',marginBottom:'24px'}}>
         <StatCard title={tr.totalDiagnoses} value={summary?.total_diagnoses} icon="🔬" gradient="linear-gradient(135deg,#1a237e,#3949ab)"/>
         <StatCard title={tr.totalPatients}  value={summary?.total_patients}  icon="👥" gradient="linear-gradient(135deg,#1b5e20,#2e7d32)"/>
         <StatCard title={tr.totalUsers}     value={summary?.total_users}     icon="👤" gradient="linear-gradient(135deg,#b71c1c,#c62828)"/>
@@ -73,16 +73,16 @@ function Users() {
   useEffect(()=>{getUsers().then(r=>setUsers(r.data)).catch(()=>{});},[]);
 
   const roleColors={admin:'#b71c1c',doctor:'#1a237e',analyst:'#4a148c'};
-  const roleLabels={admin:'Администратор',doctor:'Врач',analyst:'Аналитик'};
+  const roleLabels={admin:tr.roleAdmin,doctor:tr.roleDoctor,analyst:tr.roleAnalyst};
 
   return (
     <div>
       <h2 style={{margin:'0 0 20px',fontSize:'22px',fontWeight:'700',color:c.text}}>{tr.users}</h2>
       <div style={{background:c.bgCard,borderRadius:'14px',padding:'20px',boxShadow:c.shadow,border:`1px solid ${c.border}`}}>
-        <table style={{width:'100%',borderCollapse:'collapse'}}>
+        <div style={{overflowX:'auto'}}><table style={{width:'100%',minWidth:'620px',borderCollapse:'collapse'}}>
           <thead>
             <tr style={{background:c.bgHover}}>
-              {['Имя','Email','Роль','Статус','Действия'].map(h=>(
+              {[tr.nameLabel,'Email',tr.role,tr.statusLabel,tr.actionsLabel].map(h=>(
                 <th key={h} style={{padding:'10px 14px',textAlign:'left',fontSize:'12px',fontWeight:'600',color:c.textMuted,borderBottom:`2px solid ${c.border}`}}>{h}</th>
               ))}
             </tr>
@@ -105,7 +105,7 @@ function Users() {
                     style={{padding:'5px 12px',background:c.bgHover,border:`1px solid ${c.border}`,borderRadius:'6px',cursor:'pointer',fontSize:'12px',color:c.text,marginRight:'8px'}}>
                     {u.is_active?tr.disable:tr.enable}
                   </button>
-                  <button onClick={async()=>{if(!window.confirm('Удалить?'))return;await deleteUser(u.id);setUsers(users.filter(x=>x.id!==u.id));}}
+                  <button onClick={async()=>{if(!window.confirm(tr.confirmDelete))return;await deleteUser(u.id);setUsers(users.filter(x=>x.id!==u.id));}}
                     style={{padding:'5px 12px',background:'transparent',border:`1px solid ${c.error}`,borderRadius:'6px',cursor:'pointer',fontSize:'12px',color:c.error}}>
                     {tr.delete}
                   </button>
@@ -113,7 +113,7 @@ function Users() {
               </tr>
             ))}
           </tbody>
-        </table>
+        </table></div>
       </div>
     </div>
   );
@@ -154,9 +154,9 @@ function RegisterUser() {
             <label style={{fontSize:'12px',fontWeight:'600',color:c.textMuted}}>{tr.role}</label>
             <select value={form.role} onChange={e=>setForm({...form,role:e.target.value})}
               style={{padding:'9px 12px',borderRadius:'8px',border:`1.5px solid ${c.inputBorder}`,background:c.inputBg,color:c.text,fontSize:'14px',outline:'none'}}>
-              <option value="doctor">Врач</option>
-              <option value="analyst">Аналитик</option>
-              <option value="admin">Администратор</option>
+              <option value="doctor">{tr.roleDoctor}</option>
+              <option value="analyst">{tr.roleAnalyst}</option>
+              <option value="admin">{tr.roleAdmin}</option>
             </select>
           </div>
           {msg   && <div style={{padding:'10px 12px',border:`1px solid ${c.success}`,borderRadius:'8px',color:c.success,fontSize:'13px'}}>{msg}</div>}

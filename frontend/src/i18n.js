@@ -69,7 +69,7 @@ export const translations = {
 
     classNames: {
       N:'Норма', D:'Диаб. ретинопатия', G:'Глаукома',
-      C:'Катаракта', A:'AMD', H:'Гипертония', M:'Миопия', O:'Прочее'
+      C:'Катаракта', A:'Макулодистрофия', H:'Гипертония', M:'Миопия', O:'Прочее'
     },
 
     totalDiagnoses:  'Всего диагнозов',
@@ -108,6 +108,24 @@ export const translations = {
     dontShowAgain:   'Больше не показывать',
     nextStep:        'Далее',
     finish:          'Начать работу',
+
+    recentDiagnoses:   'Последние диагнозы',
+    doctors:           'Врачи',
+    doctorsStats:      'Статистика по врачам',
+    diagnosesByDoctor: 'Диагнозы по врачам',
+    doctorsList:       'Список врачей',
+    lastActive:        'Последняя активность',
+    countLabel:        'Количество',
+    classLabel:        'Класс',
+    statusLabel:       'Статус',
+    actionsLabel:      'Действия',
+    nameLabel:         'Имя',
+    confirmDelete:     'Удалить пользователя?',
+    aucByClass:        'AUC-ROC по классам',
+    roleAdmin:         'Администратор',
+    roleDoctor:        'Врач',
+    roleAnalyst:       'Аналитик',
+    diagnosesShort:    'Диагнозов',
 
     landing: {
       signin:        'Войти',
@@ -204,7 +222,7 @@ export const translations = {
 
     classNames: {
       N:'Норма', D:'Диаб. ретинопатия', G:'Глаукома',
-      C:'Катаракта', A:'AMD', H:'Гипертония', M:'Миопия', O:'Басқа'
+      C:'Катаракта', A:'Макула дегенерациясы', H:'Гипертония', M:'Миопия', O:'Басқа'
     },
 
     totalDiagnoses:  'Барлық диагноздар',
@@ -243,6 +261,24 @@ export const translations = {
     dontShowAgain:   'Қайта көрсетпеу',
     nextStep:        'Келесі',
     finish:          'Жұмысты бастау',
+
+    recentDiagnoses:   'Соңғы диагноздар',
+    doctors:           'Дәрігерлер',
+    doctorsStats:      'Дәрігерлер статистикасы',
+    diagnosesByDoctor: 'Дәрігерлер бойынша диагноздар',
+    doctorsList:       'Дәрігерлер тізімі',
+    lastActive:        'Соңғы белсенділік',
+    countLabel:        'Саны',
+    classLabel:        'Класс',
+    statusLabel:       'Күй',
+    actionsLabel:      'Әрекеттер',
+    nameLabel:         'Аты',
+    confirmDelete:     'Пайдаланушыны жою?',
+    aucByClass:        'Кластар бойынша AUC-ROC',
+    roleAdmin:         'Әкімші',
+    roleDoctor:        'Дәрігер',
+    roleAnalyst:       'Аналитик',
+    diagnosesShort:    'Диагноздар',
 
     landing: {
       signin:        'Кіру',
@@ -339,7 +375,7 @@ export const translations = {
 
     classNames: {
       N:'Normal', D:'Diab. Retinopathy', G:'Glaucoma',
-      C:'Cataract', A:'AMD', H:'Hypertension', M:'Myopia', O:'Other'
+      C:'Cataract', A:'Macular degeneration', H:'Hypertension', M:'Myopia', O:'Other'
     },
 
     totalDiagnoses:  'Total diagnoses',
@@ -378,6 +414,24 @@ export const translations = {
     dontShowAgain:   "Don't show again",
     nextStep:        'Next',
     finish:          'Get Started',
+
+    recentDiagnoses:   'Recent diagnoses',
+    doctors:           'Doctors',
+    doctorsStats:      'Doctor statistics',
+    diagnosesByDoctor: 'Diagnoses by doctor',
+    doctorsList:       'Doctors list',
+    lastActive:        'Last active',
+    countLabel:        'Count',
+    classLabel:        'Class',
+    statusLabel:       'Status',
+    actionsLabel:      'Actions',
+    nameLabel:         'Name',
+    confirmDelete:     'Delete user?',
+    aucByClass:        'AUC-ROC by class',
+    roleAdmin:         'Administrator',
+    roleDoctor:        'Doctor',
+    roleAnalyst:       'Analyst',
+    diagnosesShort:    'Diagnoses',
 
     landing: {
       signin:        'Sign In',

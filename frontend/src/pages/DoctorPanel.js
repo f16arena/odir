@@ -34,7 +34,7 @@ function DoctorHome() {
     <div>
       <h2 style={{margin:'0 0 6px',fontSize:'22px',fontWeight:'700',color:c.text}}>{tr.home} — {name}</h2>
       <p style={{color:c.textMuted,marginBottom:'24px'}}>{tr.appSubtitle}</p>
-      <h3 style={{fontSize:'15px',fontWeight:'600',color:c.text,marginBottom:'12px'}}>Последние диагнозы</h3>
+      <h3 style={{fontSize:'15px',fontWeight:'600',color:c.text,marginBottom:'12px'}}>{tr.recentDiagnoses}</h3>
       {recent.length===0
         ? <Empty c={c} text={tr.noData}/>
         : recent.map(d=><DiagCard key={d.id} d={d} c={c} />)
@@ -71,7 +71,7 @@ function Patients() {
       {showForm && (
         <form onSubmit={handleCreate} style={{background:c.bgCard,borderRadius:'14px',padding:'20px',marginBottom:'20px',boxShadow:c.shadow,border:`1px solid ${c.border}`}}>
           <h3 style={{margin:'0 0 14px',color:c.text}}>{tr.newPatient}</h3>
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'12px',marginBottom:'14px'}}>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(170px,1fr))',gap:'12px',marginBottom:'14px'}}>
             {[{l:tr.patientName,k:'full_name',t:'text',p:'Иванова Мария'},{l:tr.birthDate,k:'birth_date',t:'date',p:''},{l:tr.notes,k:'notes',t:'text',p:''}].map(f=>(
               <div key={f.k} style={{display:'flex',flexDirection:'column',gap:'4px'}}>
                 <label style={{fontSize:'12px',fontWeight:'600',color:c.textMuted}}>{f.l}</label>
@@ -148,7 +148,7 @@ function Diagnose() {
   return (
     <div>
       <h2 style={{margin:'0 0 20px',fontSize:'22px',fontWeight:'700',color:c.text}}>{tr.diagnose}</h2>
-      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'20px'}}>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(290px,1fr))',gap:'20px'}}>
 
         <div style={{background:c.bgCard,borderRadius:'14px',padding:'20px',boxShadow:c.shadow,border:`1px solid ${c.border}`}}>
           <h3 style={{margin:'0 0 12px',fontSize:'15px',fontWeight:'600',color:c.text}}>1. {tr.selectPatient}</h3>
@@ -247,7 +247,8 @@ function History() {
 }
 
 function DiagCard({d,c,expanded}) {
-  const { tr } = useTheme();
+  const { tr, lang } = useTheme();
+  const locale = {ru:'ru',kz:'kk',en:'en-GB'}[lang] || 'ru';
   const classNames = tr.classNames || {N:'Норма',D:'Диаб. ретинопатия',G:'Глаукома',C:'Катаракта',A:'AMD',H:'Гипертония',M:'Миопия'};
   const [open,setOpen]=useState(false);
   const detected = (d.detected_classes||[]).filter(cls=>cls!=='O');
@@ -256,7 +257,7 @@ function DiagCard({d,c,expanded}) {
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
         <div>
           <div style={{fontWeight:'600',fontSize:'14px',color:c.text}}>{d.patient_name}</div>
-          <div style={{fontSize:'12px',color:c.textMuted,marginTop:'2px'}}>{new Date(d.created_at).toLocaleString('ru')}</div>
+          <div style={{fontSize:'12px',color:c.textMuted,marginTop:'2px'}}>{new Date(d.created_at).toLocaleString(locale)}</div>
         </div>
         <div style={{display:'flex',gap:'6px',flexWrap:'wrap'}}>
           {detected.length>0

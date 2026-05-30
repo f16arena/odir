@@ -17,7 +17,7 @@ export default function AnalystPanel() {
     { path:'/analyst',          icon:'📊', label:tr.dashboard    },
     { path:'/analyst/model',    icon:'🤖', label:tr.modelMetrics },
     { path:'/analyst/patients', icon:'👥', label:tr.patients     },
-    { path:'/analyst/doctors',  icon:'👨‍⚕️', label:'Врачи'        },
+    { path:'/analyst/doctors',  icon:'👨‍⚕️', label:tr.doctors      },
   ];
   return (
     <Layout menuItems={MENU}>
@@ -58,7 +58,7 @@ function Dashboard() {
   return (
     <div>
       <h2 style={{margin:'0 0 20px',fontSize:'22px',fontWeight:'700',color:c.text}}>{tr.dashboard}</h2>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'14px',marginBottom:'20px'}}>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))',gap:'14px',marginBottom:'20px'}}>
         <StatCard title={tr.totalDiagnoses}  value={summary?.total_diagnoses} icon="🔬" gradient="linear-gradient(135deg,#1a237e,#3949ab)"/>
         <StatCard title={tr.totalPatients}   value={summary?.total_patients}  icon="👥" gradient="linear-gradient(135deg,#1b5e20,#2e7d32)"/>
         <StatCard title={tr.totalUsers}      value={summary?.total_users}     icon="👤" gradient="linear-gradient(135deg,#4a148c,#6a1b9a)"/>
@@ -73,12 +73,12 @@ function Dashboard() {
             <XAxis dataKey="date" tick={{fontSize:11,fill:c.textMuted}} tickFormatter={d=>d.slice(5)}/>
             <YAxis tick={{fontSize:11,fill:c.textMuted}}/>
             <Tooltip contentStyle={{background:c.bgCard,border:`1px solid ${c.border}`,color:c.text}}/>
-            <Line type="monotone" dataKey="count" stroke="#3949ab" strokeWidth={2} dot={false} name="Диагнозов"/>
+            <Line type="monotone" dataKey="count" stroke={c.accent} strokeWidth={2} dot={false} name={tr.diagnosesShort}/>
           </LineChart>
         </ResponsiveContainer>
       </div>
 
-      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'16px'}}>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))',gap:'16px'}}>
         <div style={{background:c.bgCard,borderRadius:'14px',padding:'20px',boxShadow:c.shadow,border:`1px solid ${c.border}`}}>
           <h3 style={{margin:'0 0 16px',fontSize:'15px',fontWeight:'600',color:c.text}}>{tr.distribution}</h3>
           <ResponsiveContainer width="100%" height={200}>
@@ -100,7 +100,7 @@ function Dashboard() {
               <XAxis type="number" tick={{fontSize:11,fill:c.textMuted}}/>
               <YAxis dataKey="name" type="category" tick={{fontSize:11,fill:c.textMuted}} width={95}/>
               <Tooltip contentStyle={{background:c.bgCard,border:`1px solid ${c.border}`,color:c.text}}/>
-              <Bar dataKey="count" name="Кол-во">{classDist.map((_,i)=><Cell key={i} fill={COLORS[i%COLORS.length]}/>)}</Bar>
+              <Bar dataKey="count" name={tr.countLabel}>{classDist.map((_,i)=><Cell key={i} fill={COLORS[i%COLORS.length]}/>)}</Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -119,7 +119,7 @@ function PatientsPage() {
   return (
     <div>
       <h2 style={{margin:'0 0 20px',fontSize:'22px',fontWeight:'700',color:c.text}}>{tr.patients}</h2>
-      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'16px'}}>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))',gap:'16px'}}>
 
         <div style={{background:c.bgCard,borderRadius:'14px',padding:'20px',boxShadow:c.shadow,border:`1px solid ${c.border}`}}>
           <h3 style={{margin:'0 0 16px',fontSize:'15px',fontWeight:'600',color:c.text}}>{tr.byGender}</h3>
@@ -142,7 +142,7 @@ function PatientsPage() {
               <XAxis dataKey="group" tick={{fontSize:12,fill:c.textMuted}}/>
               <YAxis tick={{fontSize:12,fill:c.textMuted}}/>
               <Tooltip contentStyle={{background:c.bgCard,border:`1px solid ${c.border}`,color:c.text}}/>
-              <Bar dataKey="count" name="Пациентов" fill="#6a1b9a" radius={[4,4,0,0]}/>
+              <Bar dataKey="count" name={tr.patients} fill="#6a1b9a" radius={[4,4,0,0]}/>
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -164,7 +164,7 @@ function PatientsPage() {
 }
 
 function DoctorsPage() {
-  const { dark } = useTheme();
+  const { tr, dark } = useTheme();
   const c = colors(dark);
   const [doctors,setDoctors]=useState([]);
   const [byDoctor,setByDoctor]=useState([]);
@@ -174,27 +174,27 @@ function DoctorsPage() {
   },[]);
   return (
     <div>
-      <h2 style={{margin:'0 0 20px',fontSize:'22px',fontWeight:'700',color:c.text}}>Статистика по врачам</h2>
+      <h2 style={{margin:'0 0 20px',fontSize:'22px',fontWeight:'700',color:c.text}}>{tr.doctorsStats}</h2>
 
       <div style={{background:c.bgCard,borderRadius:'14px',padding:'20px',marginBottom:'16px',boxShadow:c.shadow,border:`1px solid ${c.border}`}}>
-        <h3 style={{margin:'0 0 16px',fontSize:'15px',fontWeight:'600',color:c.text}}>Диагнозы по врачам</h3>
+        <h3 style={{margin:'0 0 16px',fontSize:'15px',fontWeight:'600',color:c.text}}>{tr.diagnosesByDoctor}</h3>
         <ResponsiveContainer width="100%" height={200}>
           <BarChart data={byDoctor}>
             <CartesianGrid strokeDasharray="3 3" stroke={dark?'#2a2a4a':'#f0f0f0'}/>
             <XAxis dataKey="name" tick={{fontSize:12,fill:c.textMuted}}/>
             <YAxis tick={{fontSize:12,fill:c.textMuted}}/>
             <Tooltip contentStyle={{background:c.bgCard,border:`1px solid ${c.border}`,color:c.text}}/>
-            <Bar dataKey="count" name="Диагнозов" fill="#0d47a1" radius={[4,4,0,0]}/>
+            <Bar dataKey="count" name={tr.diagnosesShort} fill="#0d47a1" radius={[4,4,0,0]}/>
           </BarChart>
         </ResponsiveContainer>
       </div>
 
       <div style={{background:c.bgCard,borderRadius:'14px',padding:'20px',boxShadow:c.shadow,border:`1px solid ${c.border}`}}>
-        <h3 style={{margin:'0 0 16px',fontSize:'15px',fontWeight:'600',color:c.text}}>Список врачей</h3>
-        <table style={{width:'100%',borderCollapse:'collapse'}}>
+        <h3 style={{margin:'0 0 16px',fontSize:'15px',fontWeight:'600',color:c.text}}>{tr.doctorsList}</h3>
+        <div style={{overflowX:'auto'}}><table style={{width:'100%',minWidth:'560px',borderCollapse:'collapse'}}>
           <thead>
             <tr style={{background:c.bgHover}}>
-              {['Врач','Email','Пациентов','Диагнозов','Последняя активность'].map(h=>(
+              {[tr.roleDoctor,'Email',tr.patients,tr.diagnosesShort,tr.lastActive].map(h=>(
                 <th key={h} style={{padding:'10px 14px',textAlign:'left',fontSize:'12px',fontWeight:'600',color:c.textMuted,borderBottom:`2px solid ${c.border}`}}>{h}</th>
               ))}
             </tr>
@@ -209,9 +209,9 @@ function DoctorsPage() {
                 <td style={{padding:'12px 14px',fontSize:'13px',color:c.textMuted}}>{d.last_active}</td>
               </tr>
             ))}
-            {doctors.length===0&&<tr><td colSpan="5" style={{textAlign:'center',padding:'30px',color:c.textMuted}}>Нет данных</td></tr>}
+            {doctors.length===0&&<tr><td colSpan="5" style={{textAlign:'center',padding:'30px',color:c.textMuted}}>{tr.noData}</td></tr>}
           </tbody>
-        </table>
+        </table></div>
       </div>
     </div>
   );
@@ -226,7 +226,7 @@ function ModelMetrics() {
   return (
     <div>
       <h2 style={{margin:'0 0 20px',fontSize:'22px',fontWeight:'700',color:c.text}}>{tr.modelMetrics} — {metrics.model_name}</h2>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'14px',marginBottom:'20px'}}>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))',gap:'14px',marginBottom:'20px'}}>
         <StatCard title={tr.aucMacro}   value={metrics.auc_macro}       icon="📈" gradient="linear-gradient(135deg,#1a237e,#3949ab)"/>
         <StatCard title={tr.f1Macro}    value={metrics.f1_macro}        icon="🎯" gradient="linear-gradient(135deg,#1b5e20,#2e7d32)"/>
         <StatCard title={tr.recallMacro} value={metrics.recall_macro}   icon="🔍" gradient="linear-gradient(135deg,#e65100,#f57c00)"/>
@@ -234,7 +234,7 @@ function ModelMetrics() {
       </div>
 
       <div style={{background:c.bgCard,borderRadius:'14px',padding:'20px',marginBottom:'16px',boxShadow:c.shadow,border:`1px solid ${c.border}`}}>
-        <h3 style={{margin:'0 0 16px',fontSize:'15px',fontWeight:'600',color:c.text}}>AUC-ROC по классам</h3>
+        <h3 style={{margin:'0 0 16px',fontSize:'15px',fontWeight:'600',color:c.text}}>{tr.aucByClass}</h3>
         <ResponsiveContainer width="100%" height={240}>
           <BarChart data={metrics.per_class}>
             <CartesianGrid strokeDasharray="3 3" stroke={dark?'#2a2a4a':'#f0f0f0'}/>
@@ -252,10 +252,10 @@ function ModelMetrics() {
 
       <div style={{background:c.bgCard,borderRadius:'14px',padding:'20px',boxShadow:c.shadow,border:`1px solid ${c.border}`}}>
         <h3 style={{margin:'0 0 16px',fontSize:'15px',fontWeight:'600',color:c.text}}>{tr.detailedMetrics}</h3>
-        <table style={{width:'100%',borderCollapse:'collapse'}}>
+        <div style={{overflowX:'auto'}}><table style={{width:'100%',minWidth:'560px',borderCollapse:'collapse'}}>
           <thead>
             <tr style={{background:c.bgHover}}>
-              {['Класс','AUC-ROC','F1','Precision','Recall'].map(h=>(
+              {[tr.classLabel,'AUC-ROC','F1','Precision','Recall'].map(h=>(
                 <th key={h} style={{padding:'10px 14px',textAlign:'left',fontSize:'12px',fontWeight:'600',color:c.textMuted,borderBottom:`2px solid ${c.border}`}}>{h}</th>
               ))}
             </tr>
@@ -271,7 +271,7 @@ function ModelMetrics() {
               </tr>
             ))}
           </tbody>
-        </table>
+        </table></div>
       </div>
     </div>
   );
